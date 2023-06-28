@@ -19,7 +19,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import UserContext from "../context/userContext";
 
 function Navbar() {
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { currentUser, setCurrentUser, updateUser } = useContext(UserContext);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const pages = [
@@ -31,7 +31,7 @@ function Navbar() {
     <Link href="/contact" color="inherit" underline="none">
       Contact
     </Link>,
-    "Participate"
+    "Participate",
   ];
   const settings = [
     <Link href="/profile" color="inherit" underline="none">
@@ -43,7 +43,7 @@ function Navbar() {
     </Link>,
     <Button variant="contained" onClick={handleLogout}>
       Logout
-    </Button>
+    </Button>,
   ];
 
   // useEffect(() => {
@@ -67,7 +67,7 @@ function Navbar() {
 
   function handleLogout(e) {
     e.preventDefault();
-    setCurrentUser(null);
+    updateUser(null);
     localStorage.setItem("authToken", null);
   }
 
@@ -88,7 +88,7 @@ function Navbar() {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none"
+              textDecoration: "none",
             }}
           >
             UniMate
@@ -110,17 +110,17 @@ function Navbar() {
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
-                horizontal: "left"
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "left"
+                horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: "block", md: "none" }
+                display: { xs: "block", md: "none" },
               }}
             >
               {pages.map((page) => (
@@ -144,7 +144,7 @@ function Navbar() {
               fontWeight: 700,
               letterSpacing: ".3rem",
               color: "inherit",
-              textDecoration: "none"
+              textDecoration: "none",
             }}
           >
             UniMate
@@ -153,7 +153,7 @@ function Navbar() {
             sx={{
               flexGrow: 1,
               display: { xs: "none", md: "flex" },
-              justifyContent: "flex-end"
+              justifyContent: "flex-end",
             }}
           >
             {pages.map((page, i) => (
@@ -177,12 +177,12 @@ function Navbar() {
                   anchorEl={anchorElUser}
                   anchorOrigin={{
                     vertical: "top",
-                    horizontal: "right"
+                    horizontal: "right",
                   }}
                   keepMounted
                   transformOrigin={{
                     vertical: "top",
-                    horizontal: "right"
+                    horizontal: "right",
                   }}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}

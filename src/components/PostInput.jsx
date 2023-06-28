@@ -3,7 +3,7 @@ import {
   firebaseStorage,
   ref,
   uploadBytesResumable,
-  getDownloadURL
+  getDownloadURL,
 } from "../firebase";
 import {
   Input,
@@ -15,7 +15,7 @@ import {
   Tooltip,
   Divider,
   Typography,
-  Stack
+  Stack,
 } from "@mui/material";
 import CameraAltRoundedIcon from "@mui/icons-material/CameraAltRounded";
 import SendIcon from "@mui/icons-material/Send";
@@ -29,12 +29,12 @@ function PostInput(props) {
   const [post, setPost] = useState({
     body: "",
     file: "",
-    username: currentUser.username
+    username: currentUser.username,
   });
 
-  useEffect(() => {
-    setCurrentUser(localStorage.getItem("user"));
-  }, [setCurrentUser]);
+  // useEffect(() => {
+  //   setCurrentUser(localStorage.getItem("user"));
+  // }, [setCurrentUser]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -47,8 +47,8 @@ function PostInput(props) {
       body: JSON.stringify(post),
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("authToken")
-      }
+        Authorization: localStorage.getItem("authToken"),
+      },
     });
 
     setPost((post) => ({ ...post, body: "", file: "" }));
@@ -56,7 +56,6 @@ function PostInput(props) {
 
   return (
     <form onSubmit={handleSubmit}>
-      {console.log(currentUser)}
       <Grid container sx={{ m: "auto", p: 4 }}>
         <Grid item xs={12}>
           <TextField
@@ -170,7 +169,7 @@ function PostInput(props) {
                               console.log("File available at", downloadURL);
                               setPost((previous) => ({
                                 ...previous,
-                                file: downloadURL
+                                file: downloadURL,
                               }));
                             }
                           );
@@ -197,7 +196,7 @@ function PostInput(props) {
               >
                 <Typography
                   sx={{
-                    color: "#111"
+                    color: "#111",
                   }}
                 >
                   {fileName}

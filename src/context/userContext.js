@@ -1,21 +1,31 @@
 import { createContext, useState, useEffect } from "react";
 
-const UserContext = createContext(null);
+const UserContext = createContext({});
 
 export const UserContextProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [authToken, setAuthToken] = useState(null);
+  const [currentUser, setCurrentUser] = useState({
+    fullName: "",
+    email: "",
+    username: "",
+    file: "",
+    university: "",
+    city: "",
+    country: "",
+    dialCode: "",
+    mobile: "",
+    friends: [],
+  });
+  const [authToken, setAuthToken] = useState("");
 
   useEffect(() => {
     const storedData = localStorage.getItem("user");
-    console.log(storedData);
     if (storedData) {
       setCurrentUser(JSON.parse(storedData));
       setAuthToken(localStorage.getItem("authToken"));
     } else {
       // Set initial data if it doesn't exist in localStorage
-      setCurrentUser(null);
-      setAuthToken(null);
+      setCurrentUser({});
+      setAuthToken("");
     }
   }, []);
 
@@ -23,8 +33,8 @@ export const UserContextProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(currentUser));
   }, [currentUser]);
 
-  const updateUser = (currentUser) => {
-    setCurrentUser(currentUser);
+  const updateUser = (currentUser, authToken) => {
+    setCurrentUser(JSON.parse(currentUser));
     setAuthToken(authToken);
   };
 
@@ -35,7 +45,7 @@ export const UserContextProvider = ({ children }) => {
         setCurrentUser,
         updateUser,
         authToken,
-        setAuthToken
+        setAuthToken,
       }}
     >
       {children}

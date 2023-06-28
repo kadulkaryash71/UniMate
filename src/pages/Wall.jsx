@@ -33,12 +33,12 @@ function Wall(props) {
     })
       .then((res) => res.json())
       .then((users) => {
-        // const removedCurrentUser = users.filter((user) => {
-        //   return user._id !== currentUser._id;
-        // });
-        // const removedFriends = removedCurrentUser.filter((user) => {
-        //   return currentUser.friends.indexOf(user._id) === -1 ? true : false;
-        // });
+        const removedCurrentUser = users.filter((user) => {
+          return user._id !== currentUser._id;
+        });
+        const removedFriends = removedCurrentUser.filter((user) => {
+          return currentUser.friends.indexOf(user._id) === -1 ? true : false;
+        });
         setUsers(users);
       });
   }, [currentUser]);

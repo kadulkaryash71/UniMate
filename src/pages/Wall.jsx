@@ -20,38 +20,38 @@ function Wall(props) {
   useEffect(() => {
     fetch("http://127.0.0.1:5000/posts", {
       headers: {
-        Authorization: localStorage.getItem("authToken")
-      }
+        Authorization: localStorage.getItem("authToken"),
+      },
     })
       .then((res) => res.json())
       .then((data) => setPosts(data));
 
     fetch("http://127.0.0.1:5000/users", {
       headers: {
-        Authorization: localStorage.getItem("authToken")
-      }
+        Authorization: localStorage.getItem("authToken"),
+      },
     })
       .then((res) => res.json())
       .then((users) => {
         const removedCurrentUser = users.filter((user) => {
           return user._id !== currentUser._id;
         });
-        const removedFriends = removedCurrentUser.filter((user) => {
+        const removedFollowing = removedCurrentUser.filter((user) => {
           return currentUser.friends.indexOf(user._id) === -1 ? true : false;
         });
-        setUsers(users);
+        setUsers(removedFollowing);
       });
   }, [currentUser]);
 
-  function handleAddFriend(e, userID) {
+  function handleFollow(e, userID) {
     fetch(
       `http://127.0.0.1:5000/users/friends/add?from=${currentUser._id}&to=${userID}`,
       {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: localStorage.getItem("authToken")
-        }
+          Authorization: localStorage.getItem("authToken"),
+        },
       }
     );
   }
@@ -71,7 +71,7 @@ function Wall(props) {
             display: "flex",
             flexDirection: "column",
             borderLeft: "1px solid #ccc",
-            borderRight: "1px solid #ccc"
+            borderRight: "1px solid #ccc",
           }}
           fullWidth
         >
@@ -128,13 +128,13 @@ function Wall(props) {
                 altText={user.username}
                 actionButton={
                   <Button
-                    onClick={(e) => handleAddFriend(e, user._id)}
+                    onClick={(e) => handleFollow(e, user._id)}
                     size="normal"
                     color="primary"
                     fullWidth
                   >
                     <PersonAddRoundedIcon />
-                    <Typography sx={{ mx: 1 }}>Add Friend</Typography>
+                    <Typography sx={{ mx: 1 }}>Follow</Typography>
                   </Button>
                 }
               />
@@ -154,8 +154,8 @@ const blogs = [
       "https://png.pngitem.com/pimgs/s/197-1971336_release-notes-icon-hd-png-download.png",
     title: "The first blog ever",
     content:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit, cupiditate. Libero accusamus reiciendis assumenda magnam quia aliquid, molestiae repudiandae dolorem ipsam dignissimos laudantium aspernatur atque dolores doloremque. Fugiat, aspernatur quod."
-  }
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit, cupiditate. Libero accusamus reiciendis assumenda magnam quia aliquid, molestiae repudiandae dolorem ipsam dignissimos laudantium aspernatur atque dolores doloremque. Fugiat, aspernatur quod.",
+  },
 ];
 
 // const users = [

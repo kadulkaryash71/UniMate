@@ -3,7 +3,7 @@ import {
   getStorage,
   ref,
   uploadBytesResumable,
-  getDownloadURL
+  getDownloadURL,
 } from "firebase/storage";
 
 const firebaseConfig = {
@@ -15,16 +15,11 @@ const firebaseConfig = {
   storageBucket: "urpgcommunity.appspot.com",
   messagingSenderId: "990593532181",
   appId: "1:990593532181:web:fda96396f8b992adfb691c",
-  measurementId: "G-YG4VFF60SS"
+  measurementId: "G-YG4VFF60SS",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firebaseStorage = getStorage(app);
 
-module.exports = {
-  firebaseStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL
-};
+export { firebaseStorage, ref, uploadBytesResumable, getDownloadURL };

@@ -12,21 +12,21 @@ function Login(props) {
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [loginData, setLoginData] = useState({
     username: "",
-    password: ""
+    password: "",
   });
 
-  useEffect(() => {
-    setCurrentUser(JSON.parse(localStorage.getItem("user")));
-  }, [setCurrentUser]);
+  // useEffect(() => {
+  //   setCurrentUser(JSON.parse(localStorage.getItem("user")));
+  // }, [setCurrentUser]);
 
-  useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(currentUser));
-  }, [currentUser]);
+  // useEffect(() => {
+  //   localStorage.setItem("user", JSON.stringify(currentUser));
+  // }, [currentUser]);
 
   function handleChange(e) {
     setLoginData((prevData) => ({
       ...prevData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   }
 
@@ -37,20 +37,23 @@ function Login(props) {
       method: "POST",
       mode: "cors",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(loginData)
+      body: JSON.stringify(loginData),
     };
-    fetch("http://localhost:5000/login", options)
+    fetch("http://127.0.0.1:5000/login", options)
       .then((data) => data.json())
       .then((data) => {
         if (data.error) {
           setErrorOccurred(data.response);
         } else {
           console.log("inside login", data.userInfo._doc);
-          localStorage.setItem("authToken", "bearer:" + data.token);
-          localStorage.setItem("user", JSON.stringify(data.userInfo._doc));
-          updateUser(data.userInfo._doc);
+          // localStorage.setItem("authToken", "bearer:" + data.token);
+          // localStorage.setItem("user", JSON.stringify(data.userInfo._doc));
+          updateUser(
+            JSON.stringify(data.userInfo._doc),
+            "bearer:" + data.token
+          );
         }
       });
   }
@@ -65,7 +68,7 @@ function Login(props) {
             padding: "10%",
             m: "auto",
             textAlign: "center",
-            width: "75%"
+            width: "75%",
           }}
         >
           <form onSubmit={handleSubmit} className="d-flex flex-column">

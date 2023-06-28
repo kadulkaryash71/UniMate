@@ -46,17 +46,18 @@ function TabPanel(props) {
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired
+  value: PropTypes.number.isRequired,
 };
 
 function a11yProps(index) {
   return {
     id: `full-width-tab-${index}`,
-    "aria-controls": `full-width-tabpanel-${index}`
+    "aria-controls": `full-width-tabpanel-${index}`,
   };
 }
 
 export default function App() {
+  const { currentUser } = useContext(UserContext);
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
@@ -71,20 +72,28 @@ export default function App() {
   return (
     // convert tabs to AppBar
     // setup routes
-    <UserContextProvider>
+    <>
       <Navbar />
 
       <Routes>
         <Route exact path="/" element={<LandingPage />} />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/signup" element={<Signup />} />
-        <Route exact path="/profile" element={<Profile />} />
-        <Route exact path="/home" element={<Wall />} />
+        <Route
+          exact
+          path="/login"
+          element={currentUser !== null ? <Home /> : <Login />}
+        />
+        <Route
+          exact
+          path="/signup"
+          element={currentUser !== null ? <Home /> : <Signup />}
+        />
+        <Route exact path="/home" element={<Home />} />
+        <Route exact path="/profile" element={<Profile user={currentUser} />} />
         <Route exact path="/about" element={<About short={false} />} />
         <Route exact path="/contact" element={<Contact />} />
       </Routes>
 
       <Footer />
-    </UserContextProvider>
+    </>
   );
 }

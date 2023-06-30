@@ -19,7 +19,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import UserContext from "../context/userContext";
 
 function Navbar() {
-  const { currentUser, setCurrentUser, updateUser } = useContext(UserContext);
+  const { currentUser, updateUser, isLoggedIn } = useContext(UserContext);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const pages = [
@@ -46,10 +46,6 @@ function Navbar() {
     </Button>,
   ];
 
-  // useEffect(() => {
-  //   setCurrentUser(localStorage.getItem("user"));
-  // }, [setCurrentUser]);
-
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -67,8 +63,7 @@ function Navbar() {
 
   function handleLogout(e) {
     e.preventDefault();
-    updateUser(null);
-    localStorage.setItem("authToken", null);
+    updateUser({}, "", false);
   }
 
   return (
@@ -164,7 +159,7 @@ function Navbar() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            {currentUser ? (
+            {Boolean(isLoggedIn) ? (
               <Container>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

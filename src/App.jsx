@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import PropTypes from "prop-types";
 import SwipeableViews from "react-swipeable-views";
 import { useTheme } from "@mui/material/styles";
@@ -19,9 +21,7 @@ import Footer from "./components/Footer";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 
-import { Routes, Route } from "react-router-dom";
-
-import UserContext, { UserContextProvider } from "./context/userContext";
+import UserContext from "./context/userContext";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,7 +57,7 @@ function a11yProps(index) {
 }
 
 export default function App() {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, isLoggedIn } = useContext(UserContext);
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
@@ -70,27 +70,35 @@ export default function App() {
   };
 
   return (
-    // convert tabs to AppBar
-    // setup routes
     <>
       <Navbar />
 
       <Routes>
+        {/* Public Routes */}
         <Route exact path="/" element={<LandingPage />} />
+
         <Route
           exact
           path="/login"
-          element={currentUser !== null ? <Home /> : <Login />}
+          element={!Boolean(isLoggedIn) ? <Login /> : <Navigate to="/home" />}
         />
         <Route
           exact
           path="/signup"
-          element={currentUser !== null ? <Home /> : <Signup />}
+          element={!Boolean(isLoggedIn) ? <Signup /> : <Navigate to="/home" />}
         />
-        <Route exact path="/home" element={<Home />} />
         <Route exact path="/profile" element={<Profile user={currentUser} />} />
         <Route exact path="/about" element={<About short={false} />} />
         <Route exact path="/contact" element={<Contact />} />
+        {/* Public Routes */}
+
+        {/* Protected Routes */}
+        <Route
+          exact
+          path="/home"
+          element={Boolean(isLoggedIn) ? <Home /> : <Navigate to="/login" />}
+        />
+        {/* Protected Routes */}
       </Routes>
 
       <Footer />

@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 
-const UserContext = createContext({});
+const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({
@@ -16,26 +16,43 @@ export const UserContextProvider = ({ children }) => {
     friends: [],
   });
   const [authToken, setAuthToken] = useState("");
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const storedData = localStorage.getItem("user");
     if (storedData) {
       setCurrentUser(JSON.parse(storedData));
       setAuthToken(localStorage.getItem("authToken"));
+      setLoggedIn(localStorage.getItem("isLoggedIn") === "true");
     } else {
       // Set initial data if it doesn't exist in localStorage
-      setCurrentUser({});
+      setCurrentUser({
+        fullName: "",
+        email: "",
+        username: "",
+        file: "",
+        university: "",
+        city: "",
+        country: "",
+        dialCode: "",
+        mobile: "",
+        friends: [],
+      });
       setAuthToken("");
+      setLoggedIn(false);
     }
   }, []);
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(currentUser));
-  }, [currentUser]);
+    localStorage.setItem("authToken", authToken);
+    localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
+  }, [currentUser, authToken, isLoggedIn]);
 
-  const updateUser = (currentUser, authToken) => {
-    setCurrentUser(JSON.parse(currentUser));
-    setAuthToken(authToken);
+  const updateUser = (updatedUser, updatedAuthToken, loginStatus) => {
+    setCurrentUser(updatedUser);
+    setAuthToken(updatedAuthToken);
+    setLoggedIn(loginStatus);
   };
 
   return (
@@ -46,6 +63,8 @@ export const UserContextProvider = ({ children }) => {
         updateUser,
         authToken,
         setAuthToken,
+        isLoggedIn,
+        setLoggedIn,
       }}
     >
       {children}

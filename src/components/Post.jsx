@@ -11,6 +11,8 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Checkbox from "@mui/material/Checkbox";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
+import LayersOutlinedIcon from "@mui/icons-material/LayersOutlined";
+import LayersRoundedIcon from "@mui/icons-material/LayersRounded";
 import Favorite from "@mui/icons-material/Favorite";
 import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
@@ -31,15 +33,16 @@ const ExpandMore = styled((props) => {
 })(({ theme, expand }) => ({
   marginLeft: "auto",
   transition: theme.transitions.create("transform", {
-    duration: theme.transitions.duration.shortest
-  })
+    duration: theme.transitions.duration.shortest,
+  }),
 }));
 
 // props: postID, username, likes, comments, file, body, createdAt
 export default function Post(props) {
   const [expanded, setExpanded] = React.useState(false);
   const [isLiked, setLiked] = useState(false);
-  const { currentUser } = useContext(userContext);
+  const [isStacked, setStacked] = useState(false);
+  const { currentUser, authToken } = useContext(userContext);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -53,9 +56,9 @@ export default function Post(props) {
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
-          Authorization: localStorage.getItem("authToken")
+          Authorization: authToken,
         },
-        body: JSON.stringify({ username: currentUser.username })
+        body: JSON.stringify({ username: currentUser.username }),
       }
     );
   }
@@ -129,8 +132,22 @@ export default function Post(props) {
           </Grid>
           <Grid item sx={{ m: "auto", p: "auto" }}>
             <Stack alignItems="center">
-              <ShareIcon />
+              <IconButton>
+                <ShareIcon />
+              </IconButton>
               <Typography paragraph>Share</Typography>
+            </Stack>
+          </Grid>
+          <Grid item sx={{ m: "auto", p: "auto" }}>
+            <Stack alignItems="center">
+              <IconButton>
+                {!isStacked ? (
+                  <LayersOutlinedIcon onClick={() => setStacked(true)} />
+                ) : (
+                  <LayersRoundedIcon onClick={() => setStacked(false)} />
+                )}
+              </IconButton>
+              <Typography paragraph>Stack Post</Typography>
             </Stack>
           </Grid>
         </Grid>

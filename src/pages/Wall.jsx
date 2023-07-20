@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react";
+import { useQuery, gql } from "@apollo/client";
 
 import { Grid, Paper, Button, Box, Container, Divider } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -8,19 +9,21 @@ import Post from "../components/Post";
 import Search from "../components/Search";
 import HorizontalCard from "../components/HorizontalCard";
 import VerticalCard from "../components/VerticalCard";
+import Loading from "../components/Loading";
 import UserContext from "../context/userContext";
 
 import PersonAddRoundedIcon from "@mui/icons-material/PersonAddRounded";
 
 function Wall(props) {
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, authToken } = useContext(UserContext);
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
+  const { loading, error, data } = useQuery(GET_USERS);
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/posts", {
       headers: {
-        Authorization: localStorage.getItem("authToken"),
+        Authorization: authToken,
       },
     })
       .then((res) => res.json())
@@ -28,7 +31,7 @@ function Wall(props) {
 
     fetch("http://127.0.0.1:5000/users", {
       headers: {
-        Authorization: localStorage.getItem("authToken"),
+        Authorization: authToken,
       },
     })
       .then((res) => res.json())
@@ -50,7 +53,7 @@ function Wall(props) {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: localStorage.getItem("authToken"),
+          Authorization: authToken,
         },
       }
     );
@@ -76,21 +79,7 @@ function Wall(props) {
           fullWidth
         >
           <PostInput />
-          {posts.length > 0 &&
-            posts.map((post) => {
-              return (
-                <Post
-                  key={post._id}
-                  postID={post._id}
-                  username={post.username}
-                  likes={post.likes}
-                  file={post.file}
-                  body={post.body}
-                  createdAt={new Date(post.createdAt).toLocaleString()}
-                  comments={post.comments}
-                />
-              );
-            })}
+          <Posts />
         </Box>
       </Grid>
       {/* Playground */}
@@ -118,27 +107,7 @@ function Wall(props) {
             <Typography color="primary" component="h4">
               Similar People
             </Typography>
-            {users.map((user, i) => (
-              <VerticalCard
-                key={user._id}
-                heading={user.fullName}
-                title={user.university}
-                subtitle={user.city + ", " + user.country}
-                image={user.file}
-                altText={user.username}
-                actionButton={
-                  <Button
-                    onClick={(e) => handleFollow(e, user._id)}
-                    size="normal"
-                    color="primary"
-                    fullWidth
-                  >
-                    <PersonAddRoundedIcon />
-                    <Typography sx={{ mx: 1 }}>Follow</Typography>
-                  </Button>
-                }
-              />
-            ))}
+            <FriendsList />
           </Container>
           {/* Users */}
         </Box>
@@ -158,23 +127,99 @@ const blogs = [
   },
 ];
 
-// const users = [
-//   {
-//     fullName: "Yash Kadulkar",
-//     city: "Phoenix, Arizona, United States",
-//     profileImage:
-//       "https://media.licdn.com/dms/image/D4D03AQFHYZSRWMLhSw/profile-displayphoto-shrink_800_800/0/1633016775234?e=2147483647&v=beta&t=gK0kcJ9eaVGpCzqqRgLyxDF1-yu7NCJUm_QLFWSDVHU",
-//     username: "yashk"
-//     // actionButton={""}
-//   },
-//   {
-//     fullName: "Yash Kadulkar",
-//     city: "Dublin 9, Dublin, Ireland",
-//     profileImage:
-//       "https://res.cloudinary.com/practicaldev/image/fetch/s--yd7MfzCb--/c_fill,f_auto,fl_progressive,h_320,q_auto,w_320/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/1001603/e5d1fc41-7a53-4e43-8e4c-2d09fad58948.jpg",
-//     username: "yash_novice"
-//     // actionButton={""}
-//   }
-// ];
+// graphql queries
+const GET_USERS = gql`
+  query Users {
+    users {
+      id
+      username
+      fullName
+      file
+      university
+      city
+      country
+    }
+  }
+`;
+
+const GET_POSTS = gql`
+  query Posts {
+    posts {
+      id
+      body
+      file
+      createdAt
+      user {
+        username
+        fullName
+        file
+      }
+      likes {
+        username
+        fullName
+        file
+      }
+      comments {
+        displayImage
+        commentString
+        user {
+          username
+          fullName
+          file
+        }
+      }
+    }
+  }
+`;
+// graphql queries
+
+const FriendsList = () => {
+  const { loading, error, data } = useQuery(GET_USERS);
+
+  if (loading) return <Loading />;
+  if (error) return <p>Something went wrong! (use 404 box here)</p>;
+  return data.users.map((user) => (
+    <VerticalCard
+      key={user.id}
+      heading={user.fullName}
+      title={user.university}
+      subtitle={user.city + ", " + user.country}
+      image={user.file}
+      altText={user.username}
+      actionButton={
+        <Button
+          onClick={(e) => handleFollow(e, user.id)}
+          size="normal"
+          color="primary"
+          fullWidth
+        >
+          <PersonAddRoundedIcon />
+          <Typography sx={{ mx: 1 }}>Follow</Typography>
+        </Button>
+      }
+    />
+  ));
+};
+
+const Posts = () => {
+  const { loading, error, data } = useQuery(GET_POSTS);
+
+  if (loading) return <Loading />;
+  if (error) return console.error("Something went wrong:", error);
+  return data.posts.map((post) => {
+    return (
+      <Post
+        key={post.id}
+        postID={post.id}
+        username={post.user.username}
+        likes={post.likes}
+        file={post.file}
+        body={post.body}
+        createdAt={new Date(Date(post.createdAt)).toLocaleString()}
+        comments={post.comments}
+      />
+    );
+  });
+};
 
 export default Wall;

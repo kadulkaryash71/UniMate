@@ -24,17 +24,13 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import UserContext from "../context/userContext";
 
 function PostInput(props) {
-  const { currentUser, setCurrentUser, authToken } = useContext(UserContext);
+  const { currentUser, authToken } = useContext(UserContext);
   const [fileName, setFileName] = useState(false);
   const [post, setPost] = useState({
     body: "",
     file: "",
     username: currentUser.username,
   });
-
-  // useEffect(() => {
-  //   setCurrentUser(localStorage.getItem("user"));
-  // }, [setCurrentUser]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -47,7 +43,7 @@ function PostInput(props) {
       body: JSON.stringify(post),
       headers: {
         "Content-Type": "application/json",
-        Authorization: localStorage.getItem("authToken"),
+        Authorization: authToken,
       },
     });
 

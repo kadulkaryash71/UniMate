@@ -169,7 +169,7 @@ export default function Post(props) {
               props.comments.map((comment, i) => (
                 <Typography key={i} paragraph>
                   <Comment
-                    fullName={comment.username}
+                    commenter={comment.user}
                     commentBody={comment.commentString}
                     displayImage={comment.displayImage}
                   />

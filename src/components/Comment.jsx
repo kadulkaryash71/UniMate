@@ -7,21 +7,21 @@ const Item = styled(Box)(({ theme }) => ({
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: "center",
-  color: theme.palette.text.primary
+  color: theme.palette.text.primary,
 }));
 
-// props: username, displayImage, fullName, commentBody
+// props: commenter, commentBody
 function Comment(props) {
   return (
     <Box sx={{ my: 2 }}>
       <Stack direction="row" sx={{ background: "#ccf", borderRadius: "1em" }}>
         <Item>
-          <Avatar alt={props.fullName} src={props.displayImage} />
+          <Avatar alt={props.commenter.fullName} src={props.commenter.file} />
         </Item>
         <Item>
           <Grid container direction="column" align="left">
             <Grid item sx={{ fontWeight: "bold" }}>
-              {props.fullName}
+              {props.commenter.username}
             </Grid>
             <Grid item>{props.commentBody}</Grid>
           </Grid>

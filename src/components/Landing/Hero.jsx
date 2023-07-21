@@ -24,7 +24,7 @@ export default function Hero() {
           backgroundColor: "rgba(220,220,220, 0.8)",
           top: "50%",
           transform: "translateY(-50%)",
-          borderRadius: "0 3em 3em 0"
+          borderRadius: "0 3em 3em 0",
         }}
       >
         <h2 className="text primary-text" sx={{ color: "#FF0060" }}>

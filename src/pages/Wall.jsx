@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { useQuery, gql } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 
 import { Grid, Paper, Button, Box, Container, Divider } from "@mui/material";
 import Typography from "@mui/material/Typography";
@@ -10,7 +10,9 @@ import Search from "../components/Search";
 import HorizontalCard from "../components/HorizontalCard";
 import VerticalCard from "../components/VerticalCard";
 import Loading from "../components/Loading";
+
 import UserContext from "../context/userContext";
+import { GET_USERS, GET_POSTS } from "../graphqlQueries";
 
 import PersonAddRoundedIcon from "@mui/icons-material/PersonAddRounded";
 
@@ -126,52 +128,6 @@ const blogs = [
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit, cupiditate. Libero accusamus reiciendis assumenda magnam quia aliquid, molestiae repudiandae dolorem ipsam dignissimos laudantium aspernatur atque dolores doloremque. Fugiat, aspernatur quod.",
   },
 ];
-
-// graphql queries
-const GET_USERS = gql`
-  query Users {
-    users {
-      id
-      username
-      fullName
-      file
-      university
-      city
-      country
-    }
-  }
-`;
-
-const GET_POSTS = gql`
-  query Posts {
-    posts {
-      id
-      body
-      file
-      createdAt
-      user {
-        username
-        fullName
-        file
-      }
-      likes {
-        username
-        fullName
-        file
-      }
-      comments {
-        displayImage
-        commentString
-        user {
-          username
-          fullName
-          file
-        }
-      }
-    }
-  }
-`;
-// graphql queries
 
 const FriendsList = () => {
   const { loading, error, data } = useQuery(GET_USERS);
